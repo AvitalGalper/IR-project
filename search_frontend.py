@@ -1,12 +1,27 @@
+import os
+import pickle
 from flask import Flask, request, jsonify
+from inverted_index_gcp import *
+from google.cloud import storage
 
+# smallIndex_text = InvertedIndex.read_index('postings_gcp', 'index', 'irprojectaon')
 class MyFlaskApp(Flask):
     def run(self, host=None, port=None, debug=None, **options):
+        self.client = storage.Client.from_service_account_json("C:\\Users\\avita\\OneDrive\\Desktop\\ir_proj_20240219\\ir-project-aon-029f99e79290.json")
+      #  self.client = storage.Client()
+        self.bucket = self.client.bucket('irprojectaon')
+        blobreader = self.bucket.get_blob(f"postings_gcp/index.pkl").open('rb')
+        self.smallIndex_text = pickle.load(blobreader)
+        blobreader.close()
+
         super(MyFlaskApp, self).run(host=host, port=port, debug=debug, **options)
+
+        # blobreader = self.bucket.get_blob(f"pr/part-00000-a5c6f1b4-b8ff-4664-aa8f-1eac2262bc58-c000.csv.gz").open('rb')
+        # self.smallIndex_text = pickle.load(blobreader)
+        # blobreader.close()
 
 app = MyFlaskApp(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-
 
 @app.route("/search")
 def search():
@@ -26,12 +41,13 @@ def search():
         list of up to 100 search results, ordered from best to worst where each 
         element is a tuple (wiki_id, title).
     '''
+    hi = InvertedIndex.read_posting_list(app.smallIndex_text, "world")
+    print(hi)
     res = []
     query = request.args.get('query', '')
     if len(query) == 0:
       return jsonify(res)
     # BEGIN SOLUTION
-
     # END SOLUTION
     return jsonify(res)
 
@@ -171,6 +187,7 @@ def get_pageview():
 
     # END SOLUTION
     return jsonify(res)
+
 
 
 if __name__ == '__main__':
