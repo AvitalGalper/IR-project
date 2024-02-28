@@ -1,24 +1,19 @@
-import os
-import pickle
 from flask import Flask, request, jsonify
 from inverted_index_gcp import *
+from indexMethods import *
 from google.cloud import storage
+from EnumPath import *
 
-# smallIndex_text = InvertedIndex.read_index('postings_gcp', 'index', 'irprojectaon')
 class MyFlaskApp(Flask):
     def run(self, host=None, port=None, debug=None, **options):
-        self.client = storage.Client.from_service_account_json("C:\\Users\\avita\\OneDrive\\Desktop\\ir_proj_20240219\\ir-project-aon-029f99e79290.json")
-      #  self.client = storage.Client()
-        self.bucket = self.client.bucket('irprojectaon')
-        blobreader = self.bucket.get_blob(f"postings_gcp/index.pkl").open('rb')
-        self.smallIndex_text = pickle.load(blobreader)
-        blobreader.close()
-
+        self.bucket = create_bucket(KEY)
+        # self.index_text_small = read_index(self.bucket, INDEX_TEXT+SEP+SMALL_TEXT_NAME_INDEX_PKL_FILE+PKL)
+        # self.index_title_small = read_index(self.bucket, INDEX_TITLE+SEP+SMALL_TITLE_NAME_INDEX_PKL_FILE+PKL)
+        self.index_text_big = read_index(self.bucket, INDEX_TEXT+BIG_INDEX+SEP+BIG_TEXT_NAME_INDEX_PKL_FILE+PKL)
+        self.index_title_big = read_index(self.bucket, INDEX_TITLE+BIG_INDEX+SEP+BIG_TITLE_NAME_INDEX_PKL_FILE+PKL)
+        self.DL = read_index(self.bucket, DOC_LENGTH)
+        self.PageRank = read_page_rank(self.bucket, BIG_PAGE_RANK_PATH_CSV)
         super(MyFlaskApp, self).run(host=host, port=port, debug=debug, **options)
-
-        # blobreader = self.bucket.get_blob(f"pr/part-00000-a5c6f1b4-b8ff-4664-aa8f-1eac2262bc58-c000.csv.gz").open('rb')
-        # self.smallIndex_text = pickle.load(blobreader)
-        # blobreader.close()
 
 app = MyFlaskApp(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
@@ -41,13 +36,32 @@ def search():
         list of up to 100 search results, ordered from best to worst where each 
         element is a tuple (wiki_id, title).
     '''
-    hi = InvertedIndex.read_posting_list(app.smallIndex_text, "world")
-    print(hi)
+    # print_index_text_small = read_posting_list(app.index_text_small, "world", SMALL_TEXT_INDEX_NAME)
+    # print(print_index_text_small)
+    # print_index_title_small = read_posting_list(app.index_title_small, "world", SMALL_TITLE_INDEX_NAME)
+    # print(print_index_title_small)
+    # print("Text BIG")
+    # print_index_text_big = read_posting_list(app.index_text_big, "cat", BIG_TEXT_INDEX_NAME)
+    # print(print_index_text_big)
+    # print("Title BIG")
+    # print_index_title_big = read_posting_list(app.index_title_big, "world", BIG_TITLE_INDEX_NAME)
+    # print(print_index_title_big)
+    # print("Doc len for doc id 36443200")
+    # print(app.DL[36443200])
+    # print(len(app.DL))
+    # print("Page Rank")
+    # print(app.PageRank[3434750])  
+
     res = []
     query = request.args.get('query', '')
     if len(query) == 0:
       return jsonify(res)
     # BEGIN SOLUTION
+    bm25List = BM_25(app.DL, app.index_text_big)
+    titleSimilarity = TitleNormalize(app.index_title_big)
+    meargeedList = Mearge(bm25List, titleSimilarity)
+    sortWithPageRankScore = sortPageRank(meargeedList)
+    res = sortWithPageRankScore
     # END SOLUTION
     return jsonify(res)
 

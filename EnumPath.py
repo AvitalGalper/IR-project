@@ -1,0 +1,20 @@
+#DOC LEN
+DOC_LENGTH="DL_BIG.pkl"
+KEY="C:\\Users\\avita\\OneDrive\\Desktop\\ir_proj_20240219\\ir-project-aon-029f99e79290.json"
+SEP="/"
+BIG_INDEX="_big_index"
+PKL=".pkl"
+PAGE_RANK_PATH_CSV="pr/part-00000-5fcbc00b-002b-4812-bed6-2b7118764830-c000.csv.gz"
+BIG_PAGE_RANK_PATH_CSV="pr_big/part-00000-72648a0b-94b4-4106-9676-53078d207464-c000.csv.gz"
+#TEXT
+INDEX_TEXT="postings_gcp_text"
+BIG_TEXT_INDEX_NAME="text_big_index"
+SMALL_TEXT_INDEX_NAME="text"
+BIG_TEXT_NAME_INDEX_PKL_FILE="big_index"
+SMALL_TEXT_NAME_INDEX_PKL_FILE="index"
+#TITLE
+INDEX_TITLE="postings_gcp_title"
+BIG_TITLE_INDEX_NAME="title_big_index"
+SMALL_TITLE_INDEX_NAME="title"
+BIG_TITLE_NAME_INDEX_PKL_FILE="big_index_title"
+SMALL_TITLE_NAME_INDEX_PKL_FILE="index_title"
