@@ -12,9 +12,17 @@ BIG_TEXT_INDEX_NAME="text_big_index"
 SMALL_TEXT_INDEX_NAME="text"
 BIG_TEXT_NAME_INDEX_PKL_FILE="big_index"
 SMALL_TEXT_NAME_INDEX_PKL_FILE="index"
+#TEXT FILTER
+BIG_INDEX_FILTER="_with_filter_2"
+BIG_TEXT_FILTER_INDEX_NAME="text_big_index_with_filter_2"
+BIG_TEXT_FILTER_NAME_INDEX_PKL_FILE="big_index_with_filter_2"
 #TITLE
 INDEX_TITLE="postings_gcp_title"
 BIG_TITLE_INDEX_NAME="title_big_index"
 SMALL_TITLE_INDEX_NAME="title"
 BIG_TITLE_NAME_INDEX_PKL_FILE="big_index_title"
 SMALL_TITLE_NAME_INDEX_PKL_FILE="index_title"
+#TITLE STEMMING
+STEMMING="_stemming"
+BIG_TITLE_INDEX_NAME_STEMMING="title_big_index_stemming"
+BIG_TITLE_NAME_INDEX_PKL_FILE_STEMMING="big_index_title_stemming"

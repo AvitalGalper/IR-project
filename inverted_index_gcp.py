@@ -1,11 +1,6 @@
-import sys
-from collections import Counter, OrderedDict
+
+from collections import Counter
 import itertools
-from itertools import islice, count, groupby
-import pandas as pd
-import os
-import re
-from operator import itemgetter
 from time import time
 from pathlib import Path
 import pickle
@@ -71,7 +66,7 @@ class MultiFileReader:
         b = []
         for f_name, offset in locs:
             if f_name not in self._open_files:
-                print(f"postings_gcp_{indexName}/{f_name}")
+                # print(f"postings_gcp_{indexName}/{f_name}")
                 self._open_files[f_name] = self.bucket.get_blob(f"postings_gcp_{indexName}/{f_name}").open("rb")
             f = self._open_files[f_name]
             f.seek(offset)
