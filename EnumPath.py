@@ -1,5 +1,9 @@
 #DOC LEN
 DOC_LENGTH="DL_BIG.pkl"
+#TITLE AND ID
+TITLE_DICT="TitleDict.pkl"
+#PAGE_VIEW
+PAGE_VIEW="pageviews-202108-user.pkl"
 KEY="C:\\Users\\avita\\OneDrive\\Desktop\\ir_proj_20240219\\ir-project-aon-029f99e79290.json"
 SEP="/"
 BIG_INDEX="_big_index"
@@ -26,3 +30,8 @@ SMALL_TITLE_NAME_INDEX_PKL_FILE="index_title"
 STEMMING="_stemming"
 BIG_TITLE_INDEX_NAME_STEMMING="title_big_index_stemming"
 BIG_TITLE_NAME_INDEX_PKL_FILE_STEMMING="big_index_title_stemming"
+#ANCHOR
+BIG_INDEX_ANCHOR_FILTER="_with_filter_1"
+INDEX_ANCHOR="postings_gcp_anchor"
+BIG_ANCHOR_INDEX_NAME="anchor_big_index_with_filter_1"
+BIG_ANCHOR_NAME_INDEX_PKL_FILE="anchor_big_index_with_filter_1"

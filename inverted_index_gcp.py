@@ -7,7 +7,7 @@ import pickle
 from google.cloud import storage
 from collections import defaultdict
 from contextlib import closing
-
+from EnumPath import *
 
 # Let's start with a small block size of 30 bytes just to test things out. 
 BLOCK_SIZE = 1999998
@@ -58,7 +58,8 @@ class MultiFileReader:
     """ Sequential binary reader of multiple files of up to BLOCK_SIZE each. """
     def __init__(self):
         self._open_files = {}
-        self.client = storage.Client.from_service_account_json("C:\\Users\\avita\\OneDrive\\Desktop\\ir_proj_20240219\\ir-project-aon-029f99e79290.json")
+        self.client = storage.Client()
+        # self.client = storage.Client.from_service_account_json(KEY)
         self.bucket = self.client.bucket('irprojectaon')
 
 

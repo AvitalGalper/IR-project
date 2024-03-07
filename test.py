@@ -12,6 +12,17 @@ def calculate_precision_at_k(true_list, predicted_list, k): #nir
     if len(predicted_list) == 0:
         return 0.0
     return round(len([1 for doc_id in predicted_list if doc_id in true_set]) / len(predicted_list), 3)
+def average_precision(true_list, predicted_list, k=40): #nir
+    true_set = frozenset(true_list)
+    predicted_list = predicted_list[:k]
+    precisions = []
+    for i,doc_id in enumerate(predicted_list):
+        if doc_id in true_set:
+            prec = (len(precisions)+1) / (i+1)
+            precisions.append(prec)
+    if len(precisions) == 0:
+        return 0.0
+    return round(sum(precisions)/len(precisions),3)
 
 def recall_at_k(true_list, predicted_list, k): #nir
     true_set = frozenset(true_list)
@@ -39,18 +50,6 @@ def calculate_f1_at_k(true_list, predicted_list, k): #nir
 def mean_average(lst):
     return sum(lst)/len(lst)
 
-def average_precision(true_list, predicted_list, k=40): #nir
-    true_set = frozenset(true_list)
-    predicted_list = predicted_list[:k]
-    precisions = []
-    for i,doc_id in enumerate(predicted_list):
-        if doc_id in true_set:
-            prec = (len(precisions)+1) / (i+1)
-            precisions.append(prec)
-    if len(precisions) == 0:
-        return 0.0
-    return round(sum(precisions)/len(precisions),3)
-
 
 def results_quality(true_list, predicted_list): #nir
     p5 = calculate_precision_at_k(true_list, predicted_list, 5)
@@ -61,40 +60,56 @@ def results_quality(true_list, predicted_list): #nir
 
 def run_test(resLst, queryList, relevantDocs, times):
     print("\n")
-    new = []
-    for lst in resLst:
-        newLst = []
-        for i in lst:
-            newLst.append(str(i))
-        new.append(newLst)
+    new = resLst
+    # new = []
+    # for lst in resLst:
+    #     newLst = []
+    #     for i in lst:
+    #         newLst.append(str(i))
+    #     new.append(newLst)
 
     precision_at_5_scores = []
     f1_at_30_scores = []
     results_quality_scores = []
+    recallLst = []
+    averagePercision30 = []
     for i in range(len(relevantDocs)):
         query = queryList[i]
         relevant_docs = relevantDocs[i]
-        print("Query", i,":", query)
+        print("Query", i+1,":", query)
         precision = calculate_precision_at_k(relevant_docs, new[i], 5)
-        print("precision:", precision)
+        print("Precision:", precision)
         precision_at_5_scores.append(precision)
         f1_at_30 = calculate_f1_at_k(relevant_docs, new[i], 30)
-        print("f1:", f1_at_30)
+        print("F1:", f1_at_30)
         f1_at_30_scores.append(f1_at_30)
 
         results_Quality = results_quality(relevant_docs, new[i])
-        print("results Quality:", results_Quality)
+        print("Results Quality:", results_Quality)
         results_quality_scores.append(results_Quality)
+
+        recall = recall_at_k(relevant_docs, new[i], 30)
+        print("recall at 30:", recall)
+        recallLst.append(recall)
+
+        avgPer = average_precision(relevant_docs, new[i], 30)
+        print("Average Precision:", avgPer)
+        averagePercision30.append(avgPer)
+
 
     print("\n")
     print("*********************TOTAL**********************")
     print("--------------", len(relevantDocs),"Queries Checked-----------------")
     results_quality_avg = mean_average(results_quality_scores)
     print("\nResult quality Average-", results_quality_avg)
+    recall_avg = mean_average(recallLst)
+    print("\nRecall Average-", recall_avg)
     precision_average = mean_average(precision_at_5_scores)
-    print("\nPrecision Average-", precision_average)
+    print("\nRegular Average Precision-", precision_average)
     f1_average  = mean_average(f1_at_30_scores)
     print("\nF1 Average-", f1_average)
+    meanAP = mean_average(averagePercision30)
+    print("\nMean Average Precision(MAP@30)-", meanAP)
     time_average = mean_average(times)
     print("\nTime Average-", time_average)
 
@@ -128,3 +143,19 @@ def equal_list_myRes_vs_RelevantDoc(dictionaryTitle, dictionaryBm25, strings_lis
 
 
 
+# def calculate_recall_at_10(relevant_docs, retrieved_docs):
+#     """
+#     Calculate Recall@10.
+#
+#     Parameters:
+#         relevant_docs (set or list): Set or list of relevant document IDs.
+#         retrieved_docs (list): List of retrieved document IDs.
+#
+#     Returns:
+#         recall_10 (float): Recall@10 value.
+#     """
+#     relevant_docs = set(relevant_docs)
+#     retrieved_docs = retrieved_docs[:10]  # Consider only the top 10 retrieved documents
+#     num_relevant_retrieved = len(relevant_docs.intersection(retrieved_docs))
+#     recall_10 = num_relevant_retrieved / len(relevant_docs) if len(relevant_docs) > 0 else 0
+#     return recall_10
