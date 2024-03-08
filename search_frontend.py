@@ -3,17 +3,14 @@ from flask import Flask, request, jsonify
 from inverted_index_gcp import *
 from indexMethods import *
 from EnumPath import *
-from time import time
-from test import run_test
+import os
 
 class MyFlaskApp(Flask):
     def run(self, host=None, port=None, debug=None, **options):
         self.bucket = create_bucket(KEY)
         max_pagerank = 9913.72878216078
         max_pageview = 181126232
-        # self.index_text_big = read_index(self.bucket, INDEX_TEXT+BIG_INDEX+SEP+BIG_TEXT_NAME_INDEX_PKL_FILE+PKL)
         self.index_text_big_with_filter = read_index(self.bucket, INDEX_TEXT+BIG_INDEX+BIG_INDEX_FILTER +SEP+BIG_TEXT_FILTER_NAME_INDEX_PKL_FILE+PKL)
-        # self.index_title_big_stemming = read_index(self.bucket, INDEX_TITLE+BIG_INDEX+STEMMING+SEP+BIG_TITLE_NAME_INDEX_PKL_FILE_STEMMING+PKL)
         self.index_title_big = read_index(self.bucket, INDEX_TITLE+BIG_INDEX+SEP+BIG_TITLE_NAME_INDEX_PKL_FILE+PKL)
         self.index_anchor_big = read_index(self.bucket, INDEX_ANCHOR+BIG_INDEX+BIG_INDEX_ANCHOR_FILTER+SEP+BIG_ANCHOR_NAME_INDEX_PKL_FILE+PKL)
         self.DL = read_index(self.bucket, DOC_LENGTH)
@@ -22,24 +19,10 @@ class MyFlaskApp(Flask):
         self.ReadPageRank = read_page_rank(self.bucket, BIG_PAGE_RANK_PATH_CSV)
         self.PageRank = {doc_id: (score) / (max_pagerank) for doc_id, score in self.ReadPageRank.items()}
         self.TitleDict = read_index(self.bucket, TITLE_DICT)
-        max_dl = max(self.DL.values())
-        self.normalized_DL = {doc_id: dl / max_dl for doc_id, dl in self.DL.items()}
         super(MyFlaskApp, self).run(host=host, port=port, debug=debug, **options)
 
 app = MyFlaskApp(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-
-def result_all_querys(query, index):
-    avg_doc_length = 319.52423565619927
-    t_start = time()
-    # print("\n")
-    print("-----------------------------------", "Query *",index, "* :", query, "--------------------------------------")
-    last_result = merge_results(query, app.index_anchor_big,app.index_title_big, app.index_text_big_with_filter, app.DL, avg_doc_length, app.normalized_DL)
-    result_PageRank_PageView = merge_with_pagerank_cut60(last_result, app.PageRank, app.PageView, 0.5, 0.7, 0.8)
-    titleResult = resultWithTitle(result_PageRank_PageView, app.TitleDict)
-    pr_time = time() - t_start
-    print(pr_time)
-    return titleResult, pr_time
 
 @app.route("/search")
 def search():
@@ -58,94 +41,19 @@ def search():
     --------
         list of up to 100 search results, ordered from best to worst where each 
         element is a tuple (wiki_id, title).
-    '''
-
-    # print_index_text_big = read_posting_list(app.index_text_big, "dog", BIG_TEXT_INDEX_NAME)
-    # print("len", len(print_index_text_big))
-    # print("\n")
-    # print_index_anchor_big = read_posting_list(app.index_anchor_big, "father", BIG_ANCHOR_INDEX_NAME)
-    # print("\nlen", len(print_index_anchor_big))
-    # print("\ntype", type(print_index_anchor_big))
-    # print("\npostingList:", print_index_anchor_big)
-    # print("\n")
-    # print(sorted(print_index_text_big, key=lambda x: x[1], reverse=True))
-    # print("\n\n\n\n\n\n\n")
-    # print_index_text_big_with_filter = read_posting_list(app.index_text_big_with_filter, "dog", BIG_TEXT_FILTER_INDEX_NAME)
-    # print("len", len(print_index_text_big_with_filter))
-    # print("\n")
-    # print(sorted(print_index_text_big_with_filter, key=lambda x: x[1], reverse=True))
-
-    # print(print_index_text_big)
-    # print("Title BIG")
-    # print_index_title_big = read_posting_list(app.index_title_big, "game", BIG_TITLE_INDEX_NAME)
-    # print(len(print_index_title_big))
-    # print(print_index_title_big)
-    # print_index_title_big_stemming = read_posting_list(app.index_title_big_stemming, "game", BIG_TITLE_INDEX_NAME_STEMMING)
-    # print(len(print_index_title_big_stemming))
-    # print(print_index_title_big_stemming)
-    # print("Doc len for doc id 36443200")
-    # print(app.DL[36443200])
-    # print(type(app.PageView))
-    # print(len(app.PageView))
-    # print(list(app.PageView.most_common(50)))
-    # print("Page Rank")
-    # print(app.PageRank[3434750])  
-    import os
-    
-
-    # query = request.args.get('query', '')
-    # if len(query) == 0:
-    #   return jsonify(res)
-    # res = result_all_querys(query)
-    # return jsonify(res)
-
-    # BEGIN SOLUTION
-    # # avg_doc_length = sum(length for length in DL.values()) / len(DL)
-    #
-    # # sortWithPageRankScore = sortPageRank(meargeedList)
-    # # res = sortWithPageRankScore
-    # Open the JSON file
-
-
-
-    PATH_TO_TRAIN_QUERIES = os.getcwd()+"/queries_train_noy.json"
-
-    with open(PATH_TO_TRAIN_QUERIES) as f:
-        data = json.load(f)
-    querys = []
-    relevantDoc = []
-    i = 0
-    for q, relevantList in data.items():
-        i += 1
-        querys.append(q)
-        relevantDoc.append(relevantList)
-
-    resultList = []
+    ''' 
     res = []
-    times = []
-    indexOfQuery = 1
-    # listTitleScores = []
-    # listBM25Scores = []
-    # listAnchorScores = []
-
-    for q in querys:
-        L,T = result_all_querys(q, indexOfQuery)
-        indexOfQuery+=1
-        resultList.append(list(map(lambda x: x[0], L)))
-        res.extend(L)
-        times.append(T)
-        # listTitleScores.append(cosineScores)
-        # listBM25Scores.append(Bm25Scores)
-        # listAnchorScores.append(cosineAnchor)
-    # print("1: ",resultList)
-    # print("2: ",relevantDoc)
-    run_test(resultList,querys,relevantDoc, times)
-
-    # ----------Test To Compare list of bm25 or list of title vs the docs in answers--------
-    # QueryNumber = 14
-    # equal_list_myRes_vs_RelevantDoc(listTitleScores[QueryNumber], listBM25Scores[QueryNumber], relevantDoc[QueryNumber])
+    query = request.args.get('query', '')
+    if len(query) == 0:
+      return jsonify(res)
+    #BEGIN SOLUTION
+    merge_methods = merge_results(query, app.index_anchor_big,app.index_title_big, app.index_text_big_with_filter, app.DL)
+    merge_PageRank_PageView = merge_with_pagerank_cut60(merge_methods, app.PageRank, app.PageView)
+    title_list = resultWithTitle(merge_PageRank_PageView, app.TitleDict)
+    res.extend(title_list)
     #END SOLUTION
     return jsonify(res)
+
 @app.route("/search_body")
 def search_body():
     ''' Returns up to a 100 search results for the query using TFIDF AND COSINE

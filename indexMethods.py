@@ -1,13 +1,11 @@
 import re
 import nltk
-from nltk import PorterStemmer
 from nltk.corpus import stopwords
 import math
 from inverted_index_gcp import *
 import gzip
 from EnumPath import *
 import pandas as pd
-from time import time
 nltk.download('stopwords')
 from num2words import num2words
 
@@ -107,7 +105,7 @@ def normalize_score(scores, min_val, max_val):
     return normalized_dict
 
 
-def calculate_bm25_score(query, index_big, DL, avg_doc_length, readPL, indexType, k1, b):
+def calculate_bm25_score(query, index_big, DL, avg_doc_length, readPL, k1, b):
     """
     This function calculates the BM25 score for a given query and returns the top 1000 documents with their scores.
     -----------
@@ -117,7 +115,6 @@ def calculate_bm25_score(query, index_big, DL, avg_doc_length, readPL, indexType
     DL: Dictionary containing the length of each document.
     avg_doc_length: Average length of documents in the collection.
     readPL: Index name for reading posting lists.
-    indexType: Type of index.
     k1: Parameter controlling term frequency saturation in BM25.
     b: Parameter controlling length normalization in BM25.
     -----------
@@ -251,7 +248,7 @@ def merge_between_results(bm25_scores, cosineTitle, cosineAnchor, bm25_weight, c
         merged_scores[doc_id] += cosineAnchor.get(doc_id, 0) * cosineAnchor_weight
     return merged_scores
 
-def merge_results(query, index_anchor_big,index_title_big, index_text_big, DL, avg_doc_length, normalize_DL, wText = 2.2, wTitle = 0.7, wAnchor = 0.8, k = 3.2, b = 0.08):
+def merge_results(query, index_anchor_big,index_title_big, index_text_big, DL, avg_doc_length = 319.52423565619927, wText = 2.2, wTitle = 0.7, wAnchor = 0.8, k = 3.2, b = 0.08):
     """
     This function merges scores from different retrieval methods based on specified weights and parameters.
     -----------
@@ -262,7 +259,6 @@ def merge_results(query, index_anchor_big,index_title_big, index_text_big, DL, a
     index_text_big: Inverted index for main text.
     DL: Dictionary containing document lengths.
     avg_doc_length: Average document length.
-    normalize_DL: Flag indicating whether to normalize document lengths.
     wText: Weight for BM25 scores based on main text.
     wTitle: Weight for cosine similarity scores based on title text.
     wAnchor: Weight for BM25 scores based on anchor text.
@@ -284,9 +280,9 @@ def merge_results(query, index_anchor_big,index_title_big, index_text_big, DL, a
             wTitle,wAnchor,wText= 1, 2.5, 0.6
         else:
             wTitle,wAnchor,wText = 0.7, 0.8, 2.2
-    cosine_scores_Anchor = calculate_bm25_score(tokenize_query, index_anchor_big, DL, avg_doc_length, BIG_ANCHOR_INDEX_NAME, "ANCHOR", k, b)
+    cosine_scores_Anchor = calculate_bm25_score(tokenize_query, index_anchor_big, DL, avg_doc_length, BIG_ANCHOR_INDEX_NAME, k, b)
     cosine_scores_Title = similarity(tokenize_query, index_title_big, BIG_TITLE_INDEX_NAME)
-    bm25_scores = calculate_bm25_score(tokenize_query, index_text_big, DL, avg_doc_length, BIG_TEXT_FILTER_INDEX_NAME, "TEXT", k, b)
+    bm25_scores = calculate_bm25_score(tokenize_query, index_text_big, DL, avg_doc_length, BIG_TEXT_FILTER_INDEX_NAME, k, b)
     merge_between_result = merge_between_results(bm25_scores, cosine_scores_Title,cosine_scores_Anchor, wText, wTitle, wAnchor)
     return merge_between_result.most_common(750)
 
@@ -305,7 +301,7 @@ def normalize_pageRank(pagerank_scores):
     return normalized_pagerank
 
 
-def merge_with_pagerank_cut60(document_ids, pagerank_dict, pageview_dict, res_score, pageRank_score, pageView_score):
+def merge_with_pagerank_cut60(document_ids, pagerank_dict, pageview_dict, res_score = 0.5, pageRank_score = 0.7, pageView_score = 0.8):
     """
     This function merges search results with page rank and page view scores, and selects the top 60 documents based on the merged scores.
     -----------
