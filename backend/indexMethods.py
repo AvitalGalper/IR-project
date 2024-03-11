@@ -145,7 +145,7 @@ def calculate_bm25_score(query, index_big, DL, avg_doc_length, readPL, k1, b):
             if current_score>maxValue:
                 maxValue = current_score
     normalized_dict = normalize_score(scores, minValue, maxValue)
-    return dict(Counter(normalized_dict).most_common(1000))
+    return dict(Counter(normalized_dict).most_common(1800))
 
 def calculate_idf(query, index_text_big, corpus_len):
     """
@@ -190,7 +190,7 @@ def similarity(query, index_big, readPL):
             cosine_similarities[id] += 1
     for id in cosine_similarities.keys():
         cosine_similarities[id] = cosine_similarities[id]*(1/lenQuery)
-    return dict(Counter(cosine_similarities).most_common(1000))
+    return dict(Counter(cosine_similarities).most_common(1800))
 
 def tokenize(text):
     """
@@ -284,7 +284,7 @@ def merge_results(query, index_anchor_big,index_title_big, index_text_big, DL, a
     cosine_scores_Title = similarity(tokenize_query, index_title_big, BIG_TITLE_INDEX_NAME)
     bm25_scores = calculate_bm25_score(tokenize_query, index_text_big, DL, avg_doc_length, BIG_TEXT_FILTER_INDEX_NAME, k, b)
     merge_between_result = merge_between_results(bm25_scores, cosine_scores_Title,cosine_scores_Anchor, wText, wTitle, wAnchor)
-    return merge_between_result.most_common(750)
+    return merge_between_result.most_common(500)
 
 def normalize_pageRank(pagerank_scores):
     """
@@ -301,9 +301,9 @@ def normalize_pageRank(pagerank_scores):
     return normalized_pagerank
 
 
-def merge_with_pagerank_cut60(document_ids, pagerank_dict, pageview_dict, res_score = 0.5, pageRank_score = 0.7, pageView_score = 0.8):
+def merge_with_pagerank_cut30(document_ids, pagerank_dict, pageview_dict, res_score = 0.5, pageRank_score = 0.7, pageView_score = 0.8):
     """
-    This function merges search results with page rank and page view scores, and selects the top 60 documents based on the merged scores.
+    This function merges search results with page rank and page view scores, and selects the top 30 documents based on the merged scores.
     -----------
     Parameters:
     document_ids: List of tuples containing document IDs and their corresponding scores.
@@ -314,7 +314,7 @@ def merge_with_pagerank_cut60(document_ids, pagerank_dict, pageview_dict, res_sc
     pageView_score: Score assigned to page views.
     -----------
     Returns:
-    sorted_results: List of top 60 documents sorted by merged scores.
+    sorted_results: List of top 30 documents sorted by merged scores.
     """
     merged_results = {}
     for doc_id, score in document_ids:
@@ -322,7 +322,7 @@ def merge_with_pagerank_cut60(document_ids, pagerank_dict, pageview_dict, res_sc
         pageview_score = pageview_dict.get(doc_id, 0)
         result_score = score
         merged_results[doc_id] = (result_score * res_score) + (pagerank_score * pageRank_score) + (pageview_score * pageView_score)
-    sorted_results = sorted(merged_results.items(), key=lambda x: x[1], reverse=True)[:60]
+    sorted_results = sorted(merged_results.items(), key=lambda x: x[1], reverse=True)[:30]
     return sorted_results
 
 def resultWithTitle(result_list, title_dict):
@@ -341,69 +341,5 @@ def resultWithTitle(result_list, title_dict):
         if doc_id != 0:
             title = title_dict.get(doc_id)
             if title is not None: 
-                result.append((doc_id, title))
+                result.append((str(doc_id), title))
     return result
-
-
-# def calculate_cosine_similarity(query, document_vector):
-#     dot_product = sum(x * y for x, y in zip(query, document_vector))
-#     query_norm = math.sqrt(sum(x ** 2 for x in query))
-#     doc_norm = math.sqrt(sum(y ** 2 for y in document_vector))
-#     if query_norm == 0 or doc_norm == 0:
-#         return 0
-#     return dot_product / (query_norm * doc_norm)
-
-
-# def stamming(tokenize_query):
-#     ps = PorterStemmer()
-#     tokens = [ps.stem(word) for word in tokenize_query]
-#     return tokens
-
-# def get_top_30_results(sorted_results):
-#     top_results = dict(list(sorted_results.items())[:30])
-#     return top_results
-
-
-# def cosine_similarity(query_to_search, index, DL, normalize_DL):
-#     len_query = len(query_to_search)
-#     query_dict = Counter(query_to_search)
-#     mone = Counter()
-#     normalization_query = 0
-#     sum_q = 0
-#     corpus_len = 6348910
-#     for term in query_to_search:
-#         bigIndex = read_posting_list(index, term, BIG_ANCHOR_INDEX_NAME)
-#         if bigIndex == []:
-#             continue
-#         df = DL.get(term, 1)  # Get document frequency (DF) from DL dictionary, default to 1 if term not found
-#         idf = math.log(len(normalize_DL) / df, 10)  # Calculate IDF using document frequency (DF)
-#         for doc_id, frequency in bigIndex:
-#             mone[doc_id] += frequency * query_dict[term] * idf
-#         sum_q += (query_dict[term] * idf) ** 2
-
-#     normalization_query = 1 / math.sqrt(sum_q)
-#     for doc_id in mone.keys():
-#         nf = 1 / math.sqrt(normalize_DL[doc_id])
-#         mone[doc_id] *= normalization_query * nf
-#     sorted_items = sorted(mone.items(), key=lambda item: item[1], reverse=True)
-#     print(dict(sorted_items[:40]))
-#     return dict(sorted_items[:40])
-
-
-# from gensim.models import KeyedVectors
-# import gensim.downloader as api
-# wv = api.load('glove-wiki-gigaword-300')
-
-# def QueryExpand(query, limiter=3):
-#     expansion = []
-#     for token in query:
-#         try:
-#             similar_words = wv.most_similar(token, topn=5)
-#             expansion.extend([word for word, _ in similar_words])
-#         except:
-#             print("Word not in w2v Dictionary")
-#     expansion = list(set(expansion)) 
-#     expansion.sort(key=lambda x: x[1], reverse=True)
-#     if len(expansion) >= limiter:
-#         return expansion[:limiter]
-#     return expansion   
