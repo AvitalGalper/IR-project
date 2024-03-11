@@ -1,3 +1,5 @@
+![Alt Text](path/to/your/gif.gif)
+
 # IR-Project
 
 The purpose of this project is to implement a search engine for the entire English Wikipedia corpus. Given a query, the system retrieves the most relevant documents. The results are based on body, title and anchor of articles combined with PageRank and PageView. The system is served by a Flask server deployed on a Google Cloud VM instance, supporting one HTTP requests on port 8080: search. The engine preprocesses the query by clearing and tokenizing. The engine searching the relevant documents in the inverted index using the BM25 algorithm and Binary similarity. The calculation also considers the page views and page rank of each document.
@@ -11,10 +13,10 @@ The purpose of this project is to implement a search engine for the entire Engli
 
 ## files that we used in our project:
 
-- **DL_BIG.plk:** pkl file contains a dictionary mapping document ID to his lenght.
-- **TitleDict.pkl:** pkl file contains a dictionary mapping document ID to the document's title.
-- **pageviews.pkl:** pkl file contains a dictionary mapping document ID to his page view, which is a value represents the request for the content of a web page (relevant to the - month of August 2021, more then 10.7 million viewed atricles).
-- **pagerank.pkl:** file contains a dictionary mapping document ID to his page rank value, which is a value represent the importance of a web page.
+- **DL_BIG.plk:** This pkl file contains a dictionary that connects each document ID with its corresponding length.
+- **TitleDict.pkl:** Inside this pkl file, there's a dictionary that links each document ID with its title.
+- **pageviews.pkl:** Stored in this pkl file is dictionary that associates each document ID with its respective page view count. This count reflects the number of times a web page was accessed, specifically pertaining to the month of August 2021, where over 10.7 million articles were viewed.
+- **pagerank.pkl:** This csv file holds a dictionary that matches each document ID with its corresponding page rank value. This value quantifies the importance of a web page.
 
 ## Project Structure
 ### indexes
