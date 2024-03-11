@@ -1,4 +1,5 @@
-![Alt Text](Wikipedia_Search.gif)
+
+<img src="Wikipedia_Search.gif" width="300">
 
 # IR-Project
 
