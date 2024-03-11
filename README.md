@@ -1,4 +1,4 @@
-IR-Project
+ #IR-Project
 
 The purpose of this project is to implement a search engine for the entire English Wikipedia corpus. Given a query, the system retrieves the most relevant documents. The results are based on body, title and anchor of articles combined with PageRank and PageView. The system is served by a Flask server deployed on a Google Cloud VM instance, supporting one HTTP requests on port 8080: search. The engine preprocesses the query by clearing and tokenizing. The engine searching the relevant documents in the inverted index using the BM25 algorithm and Binary similarity. The calculation also considers the page views and page rank of each document.
 
