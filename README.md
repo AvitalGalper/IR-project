@@ -17,11 +17,11 @@ posting_list: A list of (file_name, offset) pairs.
 - pagerank.pkl: file contains a dictionary mapping document ID to his page rank value, which is a value represent the importance of a web page.
 
 # Project Structure
-- indexes
+### indexes
 This folder contains needed files to create all the big indexes (on the whole corpus), which are finally used to build the engine.
 
-- frontend
+### frontend
 This file contains the flask app which recieves http requests for queries, and returns the results for them.
 
-- backend
+### backend
 This file contains the functonlty of read the posting list etc, calculate BM25 and all the fuction Search_frontend use.
