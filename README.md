@@ -21,7 +21,7 @@ posting_list: A list of (file_name, offset) pairs.
 This folder contains needed files to create all the big indexes (on the whole corpus), which are finally used to build the engine.
 
 ### frontend
-This file contains the flask app which recieves http requests for queries, and returns the results for them.
+This folder contains the file search_fronted.py that run the flask app which recieves http requests for queries, and returns the results for them.
 
 ### backend
-This file contains the functonlty of read the posting list etc, calculate BM25 and all the fuction Search_frontend use.
+This folder contains the functonlty of read the posting list etc, calculate BM25 and all the fuction Search_frontend use.
