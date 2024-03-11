@@ -1,5 +1,6 @@
-
-<img src="Wikipedia_Search.gif" width="300">
+<div style="text-align: center;">
+    <img src="path/to/your/gif.gif" width="300">
+</div>
 
 # IR-Project
 
@@ -27,4 +28,4 @@ This directory contains needed files to create all the big indexes (on the whole
 This directory contains the file search_fronted.py that run the flask app which recieves http requests for queries, and returns the results for them.
 
 ### backend
-Inside this folder, you'll find the functionality responsible for reading the posting list, performing BM25 calculations, and implementing all the functions used by the Search_frontend. This functionality is distributed across three files: "indexMethods", "inverted_index_gcp", and "EnumPaths".
+Inside this folder, you'll find the functionality responsible for reading the posting list, performing BM25 calculations, and implementing all the functions used by the Search_frontend. This functionality is distributed across three files: "indexMethods.py", "inverted_index_gcp.py", and "EnumPaths.py".
