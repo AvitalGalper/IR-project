@@ -15,15 +15,15 @@ The purpose of this project is to implement a search engine for the entire Engli
 
 - **DL_BIG.plk:** This pkl file contains a dictionary that connects each document ID with its corresponding length.
 - **TitleDict.pkl:** Inside this pkl file, there's a dictionary that links each document ID with its title.
-- **pageviews.pkl:** Stored in this pkl file is dictionary that associates each document ID with its respective page view count. This count reflects the number of times a web page was accessed, specifically pertaining to the month of August 2021, where over 10.7 million articles were viewed.
-- **pagerank.pkl:** This csv file holds a dictionary that matches each document ID with its corresponding page rank value. This value quantifies the importance of a web page.
+- **PageViews.pkl:** Stored in this pkl file is dictionary that associates each document ID with its respective page view count. This count reflects the number of times a web page was accessed, specifically pertaining to the month of August 2021, where over 10.7 million articles were viewed.
+- **PageRank.pkl:** This csv file holds a dictionary that matches each document ID with its corresponding page rank value. This value quantifies the importance of a web page.
 
 ## Project Structure
 ### indexes
-This folder contains needed files to create all the big indexes (on the whole corpus), which are finally used to build the engine.
+This directory contains needed files to create all the big indexes (on the whole corpus), which are finally used to build the engine.
 
 ### frontend
-This folder contains the file search_fronted.py that run the flask app which recieves http requests for queries, and returns the results for them.
+This directory contains the file search_fronted.py that run the flask app which recieves http requests for queries, and returns the results for them.
 
 ### backend
-This folder contains the functonlty of read the posting list etc, calculate BM25 and all the fuction Search_frontend use.
+Inside this folder, you'll find the functionality responsible for reading the posting list, performing BM25 calculations, and implementing all the functions used by the Search_frontend. This functionality is distributed across three files: "indexMethods", "inverted_index_gcp", and "EnumPaths".
