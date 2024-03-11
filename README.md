@@ -1,4 +1,4 @@
-<div style="text-align: center;">
+<div style="margin: auto, text-align: center;">
     <img src="backend/Wikipedia_Search.gif" width="300">
 </div>
 
