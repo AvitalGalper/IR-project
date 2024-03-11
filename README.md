@@ -4,17 +4,17 @@ The purpose of this project is to implement a search engine for the entire Engli
 
 ## Inverted Index Structure
 
-- term_total : Posting list per term while building the index
-- posting_locs: A dictionary, which maps each word to name of the correlated bin file - which contains the whole posting list, and to the offset of the posting list in the file.
-- df: A dictionary, which maps each word to the document frequence of each word. The index also contain the bin files - which hold the binary data each word posting list.
-posting_list: A list of (file_name, offset) pairs.
+- **term_total:** Posting list per term while building the index
+- **posting_locs:** A dictionary, which maps each word to name of the correlated bin file - which contains the whole posting list, and to the offset of the posting list in the file.
+- **df:** A dictionary, which maps each word to the document frequence of each word. The index also contain the bin files - which hold the binary data each word posting list.
+- **posting_list:** A list of (file_name, offset) pairs.
 
 ## files that we used in our project:
 
-- DL_BIG.plk: pkl file contains a dictionary mapping document ID to his lenght.
-- TitleDict.pkl: pkl file contains a dictionary mapping document ID to the document's title.
-- pageviews.pkl: pkl file contains a dictionary mapping document ID to his page view, which is a value represents the request for the content of a web page (relevant to the - month of August 2021, more then 10.7 million viewed atricles).
-- pagerank.pkl: file contains a dictionary mapping document ID to his page rank value, which is a value represent the importance of a web page.
+- **DL_BIG.plk:** pkl file contains a dictionary mapping document ID to his lenght.
+- **TitleDict.pkl:** pkl file contains a dictionary mapping document ID to the document's title.
+- **pageviews.pkl:** pkl file contains a dictionary mapping document ID to his page view, which is a value represents the request for the content of a web page (relevant to the - month of August 2021, more then 10.7 million viewed atricles).
+- **pagerank.pkl:** file contains a dictionary mapping document ID to his page rank value, which is a value represent the importance of a web page.
 
 ## Project Structure
 ### indexes
