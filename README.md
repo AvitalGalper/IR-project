@@ -1,5 +1,5 @@
-<div style="margin: auto, text-align: center;">
-    <img src="backend/Wikipedia_Search.gif" width="300">
+<div style="text-align: center;">
+    <img src="backend/Wikipedia_Search.gif" width="300" style="display: block; margin: 0 auto;">
 </div>
 
 # IR-Project
