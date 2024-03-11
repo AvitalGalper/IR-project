@@ -1,4 +1,4 @@
-![Alt Text](path/to/your/gif.gif)
+![Alt Text](Wikipedia_Search.gif)
 
 # IR-Project
 
