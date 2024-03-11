@@ -1,5 +1,5 @@
-<div style="display: flex; justify-content: center;">
-    <img src="backend/Wikipedia_Search.gif" width="300">
+<div style="text-align: center;">
+    <img src="backend/Wikipedia_Search.gif" style="max-width: 100%; height: auto;">
 </div>
 
 # IR-Project
